@@ -3,6 +3,7 @@ package com.jspStudy.ex;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -49,22 +50,38 @@ public class joinOk extends HttpServlet {
 		 Connection connection;
 		 Statement statement;
 		 ResultSet resultSet;
+		 PreparedStatement pre;
+		 
+		 
+		 String name = request.getParameter("name");
 		 String id = request.getParameter("id");
 		 String pw = request.getParameter("pw");
-		 String name = request.getParameter("name");
 		 String phoneNum = request.getParameter("phone1");
 		 String phone2 = request.getParameter("phone2");
 		 String phone3 = request.getParameter("phone3");
 		 String gender = request.getParameter("gender");
 		 
-		 
-		 String query = "insert into joinTable values('"+ name + "','" + id + "','" + pw + "', '" + phoneNum + "','"+ phone2 +"','" + phone3 + "','" + gender + "')";
-		 
+		 System.out.println(id + pw + name);
+//		 String query = "insert into joinTable values('"+ name + "','" + id + "','" + pw + "', '" + phoneNum + "','" + gender + "','" + phone2 +"','" + phone3 + "')";
+		
 		 try {
 			 Class.forName("oracle.jdbc.driver.OracleDriver");
 			 connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", "scott", "tiger");
-			 statement = connection.createStatement();
-			 int i= statement.executeUpdate(query);
+			 String query2 = "insert into joinTable values(?,?,?,?,?,?,?)";
+			 pre = connection.prepareStatement(query2);
+			 
+			 pre.setString(1, name);
+			 pre.setString(2, id);
+			 pre.setString(3, pw);
+			 pre.setString(4, phoneNum);
+			 pre.setString(5, phone2);
+			 pre.setString(6, phone3);
+			 pre.setString(7, gender);
+			 
+			 int i = pre.executeUpdate();
+			
+//			 statement = connection.createStatement();
+//			 int i= statement.executeUpdate(query);
 			 if(i==1) {
 				 System.out.println("insert sucess");
 				 response.sendRedirect("joinResult.jsp");
